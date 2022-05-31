@@ -6,10 +6,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
+import component.BottomBar
 import component.LaunchBox
 import component.MainWindow
 import kotlinx.coroutines.delay
+import navigation.Screen
 import ui.theme.AppTheme
+import view.AndroidLauncherView
+import view.FaviconGeneratorView
+import view.ImageConverterView
 
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
@@ -39,7 +44,13 @@ fun main() = application {
 @Composable
 fun MainApp() {
     val scaffoldState = rememberScaffoldState()
-//    var selectedScreen by remember { mutableStateOf<Screen>(Screen.Converters) }
+    var selectedScreen by remember { mutableStateOf<Screen>(Screen.AndroidLauncher) }
+
+    val items = listOf(
+        Screen.AndroidLauncher,
+        Screen.FaviconGenerator,
+        Screen.Converters,
+    )
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -57,20 +68,18 @@ fun MainApp() {
             )
         },
         bottomBar = {
-//            BottomBar(
-//                items = items,
-//                selectedItemIndex = items.indexOf(selectedScreen),
-//                onItemSelected = { item -> selectedScreen = item }
-//            )
+            BottomBar(
+                items = items,
+                selectedItemIndex = items.indexOf(selectedScreen),
+                onItemSelected = { item -> selectedScreen = item }
+            )
         }
     ) {
-//        when (selectedScreen) {
-//            is Screen.Converters -> ConvertersView()
-//            is Screen.Colors -> ColorsView()
-//            is Screen.Videos -> VideosView()
-//            is Screen.Images -> ImagesView()
-//            is Screen.Fonts -> FontsView()
-//        }
+        when (selectedScreen) {
+            is Screen.Converters -> ImageConverterView()
+            is Screen.AndroidLauncher -> AndroidLauncherView()
+            is Screen.FaviconGenerator -> FaviconGeneratorView()
+        }
     }
 }
 
