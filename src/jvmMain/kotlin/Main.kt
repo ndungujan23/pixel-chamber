@@ -1,32 +1,77 @@
-// Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-import androidx.compose.material.MaterialTheme
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.*
+import component.LaunchBox
+import component.MainWindow
+import kotlinx.coroutines.delay
+import ui.theme.AppTheme
 
-@Composable
-@Preview
-fun App() {
-    var text by remember { mutableStateOf("Hello, World!") }
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
+fun main() = application {
+    val title = "Gedhafu Pixel Chamber"
+    var launched by remember { mutableStateOf(false) }
 
-    MaterialTheme {
-        Button(onClick = {
-            text = "Hello, Desktop!"
-        }) {
-            Text(text)
+    val onCloseRequest: () -> Unit = ::exitApplication
+
+    LaunchedEffect(1) {
+        delay(3000)
+        launched = true
+    }
+
+    MainWindow(launched, title, onCloseRequest) {
+        AppTheme {
+            when {
+                launched -> MainApp()
+                else -> LaunchBox()
+            }
         }
     }
 }
 
-fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
-        App()
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
+@Composable
+fun MainApp() {
+    val scaffoldState = rememberScaffoldState()
+//    var selectedScreen by remember { mutableStateOf<Screen>(Screen.Converters) }
+
+    Scaffold(
+        scaffoldState = scaffoldState,
+        backgroundColor = MaterialTheme.colors.background,
+        topBar = {
+            TopAppBar(
+                elevation = 0.dp,
+                title = {
+                    Icon(
+                        painterResource("images/logo.png"),
+                        "App logo",
+                        modifier = Modifier.size(30.dp),
+                    )
+                },
+            )
+        },
+        bottomBar = {
+//            BottomBar(
+//                items = items,
+//                selectedItemIndex = items.indexOf(selectedScreen),
+//                onItemSelected = { item -> selectedScreen = item }
+//            )
+        }
+    ) {
+//        when (selectedScreen) {
+//            is Screen.Converters -> ConvertersView()
+//            is Screen.Colors -> ColorsView()
+//            is Screen.Videos -> VideosView()
+//            is Screen.Images -> ImagesView()
+//            is Screen.Fonts -> FontsView()
+//        }
     }
 }
+
+
